@@ -1,0 +1,169 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+
+const double EPS = 1e-9;
+
+void printSystem(const vector<vector<double>>& matrix) {
+    int n = matrix.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << setw(8) << fixed << setprecision(3) << matrix[i][j];
+        }
+        cout << " |" << setw(8) << matrix[i][n] << endl;
+    }
+    cout << endl;
+}
+int getPositiveInteger(const string& prompt) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+        if (cin.fail() || value <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Введено не положительное целое число.\n";
+        }
+        else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+double getDouble(const string& prompt) {
+    double value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Введено не число.\n";
+        }
+        else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+int main() {
+    setlocale(0, "ru");
+    int n;
+    cout << "Введите количество уравнений: ";
+    cin >> n;
+
+    vector<vector<double>> matrix(n, vector<double>(n + 1));
+
+    cout << "Введите коэффициенты системы (по строкам):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= n; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+    int getPositiveInteger(const string& prompt) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+        
+        if (cin.fail() || value <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Пожалуйста, введите положительное целое число.\n";
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+double getDouble(const string& prompt) {
+    double value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+        
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Пожалуйста, введите числовое значение.\n";
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+    cout << "\nИсходная система:\n";
+    printSystem(matrix);
+
+    for (int col = 0; col < n; col++) {
+        int max_row = col;
+        for (int i = col + 1; i < n; i++) {
+            if (abs(matrix[i][col]) > abs(matrix[max_row][col])) {
+                max_row = i;
+            }
+        }
+
+        if (max_row != col) {
+            swap(matrix[col], matrix[max_row]);
+            cout << "Меняем строки " << col + 1 << " и " << max_row + 1 << ":\n";
+            printSystem(matrix);
+        }
+
+        if (abs(matrix[col][col]) < EPS) {
+            cout << "Столбец " << col + 1 << " содержит только нули!\n";
+            continue;
+        }
+
+        double pivot = matrix[col][col];
+        for (int j = col; j <= n; j++) {
+            matrix[col][j] /= pivot;
+        }
+
+        cout << "Нормализуем строку " << col + 1 << ":\n";
+        printSystem(matrix);
+
+        for (int i = col + 1; i < n; i++) {
+            double factor = matrix[i][col];
+            for (int j = col; j <= n; j++) {
+                matrix[i][j] -= factor * matrix[col][j];
+            }
+            cout << "Обнуляем элемент в строке " << i + 1 << ":\n";
+            printSystem(matrix);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        bool all_zero = true;
+        for (int j = 0; j < n; j++) {
+            if (abs(matrix[i][j]) > EPS) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && abs(matrix[i][n]) > EPS) {
+            cout << "Система не имеет решений!\n";
+
+        }
+    }
+
+    vector<double> solution(n);
+    for (int i = n - 1; i >= 0; i--) {
+        solution[i] = matrix[i][n];
+        for (int j = i + 1; j < n; j++) {
+            solution[i] -= matrix[i][j] * solution[j];
+        }
+    }
+
+    cout << "Решение системы:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "x" << i + 1 << " = " << solution[i] << endl;
+    }
+}

@@ -1,0 +1,518 @@
+% This file was converted to LaTeX by Writer2LaTeX ver. 1.9.9
+% see http://writer2latex.sourceforge.net for more info
+\documentclass{article}
+\usepackage{calc,amsmath,amssymb,amsfonts}
+\usepackage[T2A,LGR,T1]{fontenc}
+\usepackage[greek,russian]{babel}
+\usepackage[style=numeric,backend=biber]{biblatex}
+\usepackage[pdftex]{graphicx}
+\date{2025-06-04}
+\begin{document}
+МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ
+
+Федеральное государственное бюджетное образовательное
+
+учреждение высшего образования
+
+АДЫГЕЙСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ
+
+
+\bigskip
+
+Инженерно-физический факультет
+
+Кафедра автоматизированных систем обработки информации и управления
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+Отчёт по практике
+
+Решение системы линейных алгебраических уравнений методом Гаусса.
+
+
+\bigskip
+
+2 курс, группа 2ИВТ
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+Выполнил: \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Д. Э. Чич
+
+\ \ \ \ $\text{\textgreek{«}}$ \ \ \ \ \ \ $\text{\textgreek{»}}$ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 2025 г.
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+
+
+\bigskip
+
+
+\bigskip
+
+Руководитель: \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ С. В. Теплоухов
+
+\ \ \ \ $\text{\textgreek{«}}$ \ \ \ \ \ \ $\text{\textgreek{»}}$ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 2025 г.
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+Майкоп, 2025 г.
+
+\clearpage
+\bigskip
+
+Оглавление
+
+Теория\ \ 3
+
+\ \ \ \ Ход выполнения работы\ \ 5
+
+1. Подключение библиотек\ \ 5
+
+2. Константа EPS\ \ 6
+
+3. Функция printSystem()\ \ 6
+
+4. Основная функция main()\ \ 7
+
+4.2 Прямой ход метода Гаусса\ \ 8
+
+4.3 Проверка на совместность\ \ 9
+
+4.4 Обратный ход\ \ 9
+
+4.5 Вывод решения\ \ 9
+
+\ \ \ \ \ Код программы\ \ 10
+
+\ \ \ \ \ Пример работы программы\ \ 15
+
+
+\bigskip
+
+
+\bigskip
+
+\clearpage\subsection{Теория}
+Метод Гаусса $\text{\textgreek{—}}$ классический метод решения системы линейных алгебраических уравнений (СЛАУ). Это
+метод последовательного исключения переменных, когда с помощью элементарных преобразований система уравнений приводится
+к равносильной системе треугольного вида, из которой последовательно, начиная с последних (по номеру), находятся все
+переменные системы.
+
+Алгоритм решения СЛАУ методом Гаусса подразделяется на два этапа.
+
+На первом этапе осуществляется так называемый прямой ход, когда путём элементарных преобразований над строками систему
+приводят к ступенчатой или треугольной форме, либо устанавливают, что система несовместна. А именно, среди элементов
+первого столбца матрицы выбирают ненулевой, перемещают его на крайнее верхнее положение перестановкой строк и вычитают
+получившуюся после перестановки первую строку из остальных строк, домножив её на величину, равную отношению первого
+элемента каждой из этих строк к первому элементу первой строки, обнуляя тем самым столбец под ним. После того, как
+указанные преобразования были совершены, первую строку и первый столбец мысленно вычёркивают и продолжают пока не
+останется матрица нулевого размера. Если на какой-то из итераций среди элементов первого столбца не нашёлся ненулевой,
+то переходят к следующему столбцу и проделывают аналогичную операцию.
+
+На втором этапе осуществляется так называемый обратный ход, суть которого заключается в том, чтобы выразить все
+получившиеся базисные переменные через небазисные и построить фундаментальную систему решений, либо, если все
+переменные являются базисными, то выразить в численном виде единственное решение системы линейных уравнений. Эта
+процедура начинается с последнего уравнения, из которого выражают соответствующую базисную переменную (а она там всего
+одна) и подставляют в предыдущие уравнения, и так далее, поднимаясь по
+$\text{\textgreek{«}}$ступенькам$\text{\textgreek{»}}$ наверх. Каждой строчке соответствует ровно одна базисная
+переменная, поэтому на каждом шаге, кроме последнего (самого верхнего), ситуация в точности повторяет случай последней
+строки.
+
+В простейшем случае алгоритм выглядит так:
+
+ \includegraphics[width=7.842cm,height=2.078cm]{qwerty-img001.png} 
+
+Прямой ход:
+
+ \includegraphics[width=12.679cm,height=4.826cm]{qwerty-img002.png} 
+
+Обратный ход. Из последнего ненулевого уравнения выражаем базисную переменную через небазисные и подставляем в
+предыдущие уравнения. Повторяя эту процедуру для всех базисных переменных, получаем фундаментальное решение.
+
+
+\bigskip
+
+\clearpage\section{Ход выполнения работы}
+\subsection{1. Подключение библиотек}
+ \includegraphics[width=6.325cm,height=2.408cm]{qwerty-img003.png} 
+
+Рисунок 1
+
+\begin{itemize}
+\item iostream - обеспечивает базовые возможности ввода/вывода. Мы используем:
+
+\begin{itemize}
+\item cin для чтения данных
+\item cout для вывода результатов
+\item endl для перевода строки
+\end{itemize}
+\item vector - предоставляет шаблонный класс vector, который мы используем для:
+
+\begin{itemize}
+\item Хранения матрицы системы (vector{\textless}vector{\textless}double{\textgreater}{\textgreater})
+\item Хранения решения (vector{\textless}double{\textgreater})
+\end{itemize}
+\item cmath - содержит математические функции:
+
+\begin{itemize}
+\item abs() - для вычисления абсолютного значения (модуля) числа
+\item Другие функции (хотя в этой программе используются только abs)
+\end{itemize}
+\item iomanip - предоставляет средства для форматирования вывода:
+
+\begin{itemize}
+\item setw() - устанавливает ширину поля вывода
+\item fixed - фиксирует вывод чисел с плавающей точкой
+\item setprecision() - задает количество знаков после запятой
+\end{itemize}
+\end{itemize}
+
+\bigskip
+
+\clearpage\subsection{2. Константа EPS}
+ \includegraphics[width=6.458cm,height=1.032cm]{qwerty-img004.png} 
+
+Рисунок 2
+
+
+\bigskip
+
+\begin{itemize}
+\item Назначение: Используется для корректного сравнения чисел с плавающей точкой с нулем
+\end{itemize}
+
+\bigskip
+
+\subsection{3. Функция printSystem()}
+ \includegraphics[width=17.089cm,height=5.793cm]{qwerty-img005.png} 
+
+Рисунок 3
+
+\begin{enumerate}
+\item Параметр: Принимает константную ссылку на матрицу (избегаем копирования)
+\item Размер матрицы: matrix.size() - количество строк (уравнений)
+\item Вложенные циклы:
+
+\begin{itemize}
+\item Внешний цикл по строкам (i)
+\item Внутренний цикл по столбцам (j)
+\end{itemize}
+\item Форматирование вывода:
+
+\begin{itemize}
+\item setw(8) - каждое число занимает 8 символов
+\item fixed - фиксированная точка (не экспоненциальная форма)
+\item setprecision(3) - 3 знака после запятой
+\end{itemize}
+\item Разделитель: {\textbar} отделяет коэффициенты от свободного члена
+\item Перевод строки: endl в конце каждой строки и пустая строка после всей матрицы
+\end{enumerate}
+\subsection{4. Основная функция main()}
+ \includegraphics[width=16.036cm,height=7.384cm]{qwerty-img006.png} 
+
+Рисунок 4
+
+
+\bigskip
+
+\begin{itemize}
+\item n - количество уравнений (и неизвестных)
+\item matrix - двумерный вектор размером n×(n+1):
+
+\begin{itemize}
+\item n строк
+\item n+1 столбцов (последний столбец - свободные члены)
+\end{itemize}
+\item Ввод данных: построчное заполнение матрицы
+\end{itemize}
+\subsubsection{4.2 Прямой ход метода Гаусса}
+ \includegraphics[width=17.041cm,height=16.399cm]{qwerty-img007.png} 
+
+Рисунок 5
+
+\begin{enumerate}
+\item Выбор ведущего элемента: поиск максимального по модулю элемента в столбце (устойчивость алгоритма)
+\item Перестановка строк: если максимальный элемент не на диагонали
+\item Нормализация строки: деление всей строки на диагональный элемент
+\item Обнуление элементов ниже: вычитание текущей строки из нижележащих
+\end{enumerate}
+\subsubsection{4.3 Проверка на совместность}
+ \includegraphics[width=10.241cm,height=4.202cm]{qwerty-img008.png} 
+
+Рисунок 6
+
+\begin{itemize}
+\item Анализ строк: если все коэффициенты нулевые, а свободный член нет → система несовместна
+\item EPS используется для корректного сравнения с нулем
+\end{itemize}
+\subsubsection{4.4 Обратный ход}
+ \includegraphics[width=10.982cm,height=2.574cm]{qwerty-img009.png} 
+
+Рисунок 7
+
+\begin{itemize}
+\item Нахождение решения: начиная с последнего уравнения
+\item Принцип работы:
+
+\begin{enumerate}
+\item Берем свободный член (matrix[i][n])
+\item Вычитаем известные переменные (уже найденные)
+\item Получаем значение текущей переменной
+\end{enumerate}
+\end{itemize}
+\subsubsection{4.5 Вывод решения}
+ \includegraphics[width=12.569cm,height=2.117cm]{qwerty-img010.png} 
+
+Рисунок 8
+
+\begin{itemize}
+\item Формат вывода: x1 = значение, x2 = значение и т.д.
+\end{itemize}
+\section{Код программы}
+\begin{verbatim}
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+
+\bigskip
+
+using namespace std;
+
+\bigskip
+
+const double EPS = 1e-9;
+
+\bigskip
+
+void printSystem(const vector<vector<double>>& matrix) {
+    int n = matrix.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << setw(8) << fixed << setprecision(3) << matrix[i][j];
+        }
+        cout << " |" << setw(8) << matrix[i][n] << endl;
+    }
+    cout << endl;
+}
+int getPositiveInteger(const string& prompt) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+\bigskip
+
+        if (cin.fail() || value <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Пожалуйста, введите положительное целое число.\n";
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+\bigskip
+
+double getDouble(const string& prompt) {
+    double value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+\bigskip
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка! Пожалуйста, введите числовое значение.\n";
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+int main() {
+    setlocale(0, "ru");
+    int n;
+    cout << "Введите количество уравнений: ";
+    cin >> n;
+
+\bigskip
+
+    vector<vector<double>> matrix(n, vector<double>(n + 1));
+
+\bigskip
+
+    cout << "Введите коэффициенты системы (по строкам):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= n; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+
+\bigskip
+
+    cout << "\nИсходная система:\n";
+    printSystem(matrix);
+
+\bigskip
+
+    for (int col = 0; col < n; col++) {
+        int max_row = col;
+        for (int i = col + 1; i < n; i++) {
+            if (abs(matrix[i][col]) > abs(matrix[max_row][col])) {
+                max_row = i;
+            }
+        }
+
+\bigskip
+
+        if (max_row != col) {
+            swap(matrix[col], matrix[max_row]);
+            cout << "Меняем строки " << col + 1 << " и " << max_row + 1 << ":\n";
+            printSystem(matrix);
+        }
+
+\bigskip
+
+        if (abs(matrix[col][col]) < EPS) {
+            cout << "Столбец " << col + 1 << " содержит только нули!\n";
+            continue;
+        }
+
+\bigskip
+
+        double pivot = matrix[col][col];
+        for (int j = col; j <= n; j++) {
+            matrix[col][j] /= pivot;
+        }
+
+\bigskip
+
+        cout << "Нормализуем строку " << col + 1 << ":\n";
+        printSystem(matrix);
+
+\bigskip
+
+        for (int i = col + 1; i < n; i++) {
+            double factor = matrix[i][col];
+            for (int j = col; j <= n; j++) {
+                matrix[i][j] -= factor * matrix[col][j];
+            }
+            cout << "Обнуляем элемент в строке " << i + 1 << ":\n";
+            printSystem(matrix);
+        }
+    }
+
+\bigskip
+
+    for (int i = 0; i < n; i++) {
+        bool all_zero = true;
+        for (int j = 0; j < n; j++) {
+            if (abs(matrix[i][j]) > EPS) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && abs(matrix[i][n]) > EPS) {
+            cout << "Система не имеет решений!\n";
+
+\bigskip
+
+        }
+    }
+
+\bigskip
+
+    vector<double> solution(n);
+    for (int i = n - 1; i >= 0; i--) {
+        solution[i] = matrix[i][n];
+        for (int j = i + 1; j < n; j++) {
+            solution[i] -= matrix[i][j] * solution[j];
+        }
+    }
+
+\bigskip
+
+    cout << "Решение системы:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "x" << i + 1 << " = " << solution[i] << endl;
+    }
+}
+\end{verbatim}
+
+\bigskip
+
+\clearpage\section{Пример работы программы}
+\begin{verbatim}
+ \includegraphics[width=10.059cm,height=20.996cm]{qwerty-img011.png} 
+
+\end{verbatim}
+Рисунок 9
+
+
+\bigskip
+\end{document}
